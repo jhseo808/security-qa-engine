@@ -1,0 +1,13 @@
+output/
+.env
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+.pytest_cache/
+.pytest_tmp/
+test_tmp/
+test_artifacts/
+manual_test_dir/
+WEB-INF

@@ -1,0 +1,61 @@
+{
+  "scan_id": "fixture-scan-1",
+  "scan_type": "url",
+  "target": "https://fixture.example",
+  "scanned_at": "2026-03-27T01:00:00Z",
+  "scanners_run": ["headers", "dependency"],
+  "scanners_failed": ["zap"],
+  "expected_scanners": ["headers", "dependency", "zap"],
+  "executed_scanners": ["headers", "dependency"],
+  "failed_scanners": ["zap"],
+  "coverage_status": "partial",
+  "report_confidence": "medium",
+  "findings": [
+    {
+      "id": "fixture-1",
+      "source": "headers",
+      "title": "Missing CSP",
+      "severity": "high",
+      "cvss_score": null,
+      "category": "headers",
+      "location": "https://fixture.example",
+      "description": "Content-Security-Policy header is missing.",
+      "evidence": "header absent",
+      "raw": {}
+    },
+    {
+      "id": "fixture-2",
+      "source": "dependency",
+      "title": "PYSEC-2026-1: requests 2.20.0",
+      "severity": "critical",
+      "cvss_score": 9.8,
+      "category": "dependency",
+      "location": "requirements.txt (requests==2.20.0)",
+      "description": "Known critical vulnerability in requests.",
+      "evidence": "Fix versions: 2.32.4 | aliases: CVE-2026-0001 | direct dependency: True",
+      "raw": {
+        "source": "pip-audit",
+        "package": "requests",
+        "version": "2.20.0",
+        "vuln_id": "PYSEC-2026-1",
+        "description": "Known critical vulnerability in requests.",
+        "fix_versions": ["2.32.4"],
+        "aliases": ["CVE-2026-0001"],
+        "cvss_score": 9.8,
+        "is_direct": true
+      }
+    },
+    {
+      "id": "fixture-3",
+      "source": "headers",
+      "title": "Informational Header Observation",
+      "severity": "info",
+      "cvss_score": null,
+      "category": "other",
+      "location": "https://fixture.example",
+      "description": "Non-actionable observation.",
+      "evidence": "",
+      "raw": {}
+    }
+  ]
+}
