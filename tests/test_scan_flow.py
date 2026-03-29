@@ -46,7 +46,7 @@ def _result() -> dict:
 
 @contextmanager
 def _output_dir() -> Path:
-    root = Path(r"C:\Users\HP\.codex\memories\test_artifacts")
+    root = Path(r"C:\Users\")
     root.mkdir(exist_ok=True)
     path = root / f"case-{uuid.uuid4().hex}"
     path.mkdir()
