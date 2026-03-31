@@ -8,11 +8,17 @@ tools: [Bash, Read, Write, Edit, Glob, Grep]
 
 `code-analyst`는 코드베이스 기반 finding을 다룬다.
 
-대상:
+## 실행 조건
 
-- `semgrep`
-- `dependency`
-- `secrets`
+`analyst-orchestrator`로부터 코드 / 의존성 / 시크릿 관련 finding 분석 요청 시 호출된다.
+
+## 입력
+
+`raw_results.json` 내 `source`가 `semgrep` · `dependency` · `secrets`인 finding
+
+## 출력
+
+finding별 우선순위 판단 · fix path 유무 · QA 검증 가능성 분류 → `qa-reporter`로 전달
 
 ## 현재 중요 포인트
 

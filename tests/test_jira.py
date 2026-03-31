@@ -49,6 +49,8 @@ class _Session:
 
     def post(self, url: str, json: dict, timeout: int) -> _Response:
         self.post_calls.append({"url": url, "json": json, "timeout": timeout})
+        if "search" in url:
+            return _Response(self.search_payload)
         return _Response({"key": "SEC-123"})
 
     def put(self, url: str, json: dict, timeout: int) -> _Response:
@@ -90,8 +92,9 @@ def test_find_existing_issue_key_uses_dedup_label() -> None:
     key = client.find_existing_issue_key(_test_case())
 
     assert key == "SEC-9"
-    assert "labels =" in session.get_calls[0]["params"]["jql"]
-    assert _dedup_label(_test_case()) in session.get_calls[0]["params"]["jql"]
+    search_call = next(c for c in session.post_calls if "search" in c["url"])
+    assert "labels =" in search_call["json"]["jql"]
+    assert _dedup_label(_test_case()) in search_call["json"]["jql"]
 
 
 def test_create_or_update_issue_updates_existing_issue() -> None:
@@ -102,7 +105,8 @@ def test_create_or_update_issue_updates_existing_issue() -> None:
 
     assert key == "SEC-9"
     assert len(session.put_calls) == 1
-    assert len(session.post_calls) == 0
+    issue_posts = [c for c in session.post_calls if "search" not in c["url"]]
+    assert len(issue_posts) == 0
 
 
 def test_create_or_update_issue_creates_when_missing() -> None:
@@ -112,5 +116,6 @@ def test_create_or_update_issue_creates_when_missing() -> None:
     key = client.create_or_update_issue(_test_case())
 
     assert key == "SEC-123"
-    assert len(session.post_calls) == 1
+    issue_posts = [c for c in session.post_calls if "search" not in c["url"]]
+    assert len(issue_posts) == 1
     assert len(session.put_calls) == 0

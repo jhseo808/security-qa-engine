@@ -15,6 +15,29 @@ tools: [Bash, Read, Write, Edit, Glob, Grep]
 - QA 검증 가능한 테스트케이스 생성
 - 개발팀 전달용 보고서 생성
 
+## 실행 조건
+
+모든 analyst 에이전트(`header-ssl`, `network`, `code`, `owasp`)의 분석이 완료된 후 호출된다.
+`--from-filtered` 모드에서는 기존 `filtered_results.json`을 입력으로 받아 리포트만 재생성한다.
+
+## 입력
+
+| 항목 | 설명 |
+|------|------|
+| analyst 분석 결과 합산 | 각 analyst의 finding 판단 결과 |
+| `--baseline <path>` | Delta 비교용 이전 filtered_results.json (선택) |
+| `--from-filtered <path>` | 리포트 재생성 전용 (선택) |
+
+## 출력
+
+| 파일 | 대상 |
+|------|------|
+| `filtered_results.json` | 파이프라인 내부 · Jira 연동 |
+| `test_cases.md` | QA 직접 사용 |
+| `report_dev.md` | 개발팀 전달 |
+
+모든 파일은 `output/report/<timestamp>/` 아래 생성된다.
+
 ## 담당 파일
 
 - `engine/prioritizer.py`
@@ -45,7 +68,7 @@ raw findings
 - `fix_suggestion`
 - `priority_reason`
 
-## 현재 우선순위 로직
+## 우선순위 로직
 
 단순 severity 정렬이 아니다.
 

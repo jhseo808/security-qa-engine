@@ -4,16 +4,6 @@ description: Jira Cloud 연동 전담. filtered_results.json 기반 QA 이슈를
 tools: [Bash, Read, Write, Edit, Glob, Grep]
 ---
 
-## 실행 전 사용자 확인 (인터랙션)
-
-`jira-agent`는 **qa-reporter가 리포트를 완료한 직후** 아래 순서로 동작한다.
-
-1. 이슈 요약을 인라인으로 보여준다 (Fix Now / Review Needed / Backlog / FP 제외 건수 + 주요 이슈 목록).
-2. 사용자에게 Jira 티켓 생성 여부를 묻는다.
-3. 사용자가 승인한 경우에만 create-or-update를 실행한다.
-
-자세한 형식은 `CLAUDE.md § 10. Interactive Workflow > Step 4` 참고.
-
 ## 역할
 
 `jira-agent`는 `integrations/jira.py`와 Jira Cloud REST API 연동을 담당한다.
@@ -23,6 +13,22 @@ tools: [Bash, Read, Write, Edit, Glob, Grep]
 - actionable finding만 Jira로 전달
 - 같은 이슈의 중복 생성 방지
 - QA / 개발 전달에 필요한 메타데이터를 description에 포함
+
+## 실행 조건
+
+`qa-reporter`가 리포트를 완료한 직후 호출된다.
+**CLAUDE.md §9 Step 4 규칙에 따라** 이슈 요약 출력 → 사용자 승인 확인 → create-or-update 순서로 진행한다.
+사용자가 승인한 경우에만 Jira API를 호출한다.
+
+## 입력
+
+`output/report/<timestamp>/filtered_results.json`
+(false positive 제외, `action_status`가 `fix_now` 또는 `review_needed`인 finding 대상)
+
+## 출력
+
+- Jira 이슈 create 또는 update
+- Delta 있을 경우: `fixed` → Verified 코멘트, `persisted` → Still Present 코멘트
 
 ## 담당 파일
 
@@ -35,7 +41,7 @@ tools: [Bash, Read, Write, Edit, Glob, Grep]
 - description 형식: ADF
 - issue type: `Bug`
 
-## 현재 create-or-update 규칙
+## create-or-update 규칙
 
 기존처럼 무조건 새 이슈를 만들지 않는다.
 
@@ -52,7 +58,7 @@ dedup label 형식:
 sqe-<sha1-prefix>
 ```
 
-## 현재 Jira payload에 포함되는 핵심 정보
+## Jira payload 핵심 정보
 
 - `Action Status`
 - `QA Verifiable`
@@ -91,7 +97,7 @@ labels:
 
 환경 변수가 없으면 Jira 연동은 skip 가능 상태로 처리한다.
 
-## 작업 시 주의
+## 주의점
 
 - false positive는 Jira 대상이 아님
 - 개별 이슈 실패가 전체 흐름을 중단시키면 안 됨

@@ -8,7 +8,19 @@ tools: [Bash, Read, Write, Edit, Glob, Grep]
 
 `header-ssl-analyst`는 브라우저 보안 설정과 TLS 설정을 해석한다.
 
-대상:
+## 실행 조건
+
+`analyst-orchestrator`로부터 헤더 / TLS / 브라우저 보안 관련 finding 분석 요청 시 호출된다.
+
+## 입력
+
+`raw_results.json` 내 `source`가 `headers` · `ssl_labs`인 finding
+
+## 출력
+
+finding별 우선순위 판단 · false positive 식별 · QA 검증 가능성 분류 → `qa-reporter`로 전달
+
+## 담당 스캐너
 
 - `scanner/web/headers.py`
 - `scanner/web/ssl_labs.py`
